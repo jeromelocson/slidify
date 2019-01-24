@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Top 5 Tech Companies</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Top 5 Tech Companies">
+  <meta name="author" content="Jerome Locson">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Top 5 Tech Companies</h1>
+    <h2>Stocks Visualization</h2>
+    <p>Jerome Locson<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Overview</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This app will allows you to explore the stock performance of the top 5 tech companies namely: Facebook, Google, Netflix, Amazon, and Microsoft based on a given data range specified by user. The financial data are retrieved from the Yahoo! Finance website using the <strong>quantmod</strong> R library. The app is primarily created using Shiny.</p>
+
+<ul>
+<li><p>Shiny is an R package that makes it easy to build interactive web applications (apps) straight from R. This lesson will get you started building Shiny apps right away.</p></li>
+<li><p>quantmod or Quantitative Financial Modelling Framework is used to specify, build, trade, and analyse quantitative financial trading strategies.</p></li>
+<li><p>The app comprises of two main files: ui.R and sever.R, you can view the code in <a href="https://github.com/jeromelocson/techstockviz">https://github.com/jeromelocson/techstockviz</a>.</p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>ui.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(shiny)
+library(quantmod)
+shinyUI(fluidPage(
+  titlePanel(&quot;Top 5 Tech Companies - Stocks Visualization&quot;),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(&quot;symb&quot;, &quot;Select Tech Company:&quot;,
+                  c(&quot;Facebook&quot; = &quot;FB&quot;,
+                    &quot;Google&quot; = &quot;GOOG&quot;,
+                    &quot;Amazon&quot; = &quot;AMZN&quot;,
+                    &quot;Netflix&quot; = &quot;NFLX&quot;,
+                    &quot;Microsoft&quot; = &quot;MSFT&quot;)),
+      dateRangeInput(&quot;dates&quot;, &quot;Date range&quot;,start = &quot;2018-01-01&quot;, 
+                     end = as.character(Sys.Date())),
+    mainPanel(plotOutput(&quot;plot&quot;))
+)))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>server.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(shiny)
+shinyServer(function(input, output) {
+
+  dataInput &lt;- reactive({
+    getSymbols(input$symb, src = &quot;yahoo&quot;, 
+               from = input$dates[1],
+               to = input$dates[2],
+               auto.assign = FALSE)
+  })
+  output$plot &lt;- renderPlot({
+    chartSeries(dataInput(), name =  paste(&quot;TICKER: &quot;, input$symb), 
+                theme = chartTheme(&quot;white&quot;),
+                type = &quot;candlesticks&quot;,  TA = &#39;addVo()&#39;, 
+                up.col =&quot;green&quot;, dn.col =&quot;red&quot;)
+  }, height=600)
+})
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Preview</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><iframe src = 'https://jlocson.shinyapps.io/TechStock/' height='600px'></iframe></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Overview'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='ui.R'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='server.R'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Preview'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
